@@ -7,7 +7,7 @@ import pyautogui
 target = 19 #cm
 khoangcachthuc = 45 #cm
 
-qr_image = cv2.imread("D:\Project_Micro\Python Source\MENU_IOT_FOR_RESTAURANTS\QR.png")
+qr_image = cv2.imread("QR.png")
 detector = cv2.QRCodeDetector()
 # CONVERT QR CODE IMAGE TO TEXT
 data, bbox, _ = detector.detectAndDecode(qr_image)

@@ -3,6 +3,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import cv2
+import qrcode
+
+img = qrcode.make('https://oa.zalo.me/home')
 
 WHITE = (255, 255, 255)
 fonts = cv2.FONT_HERSHEY_COMPLEX
@@ -30,12 +33,18 @@ class MainWindow(QWidget):
 class Worker1(QThread):
     
     ImageUpdate = pyqtSignal(QImage)
+    hasFace = pyqtSignal()
+    
+    state = False
     
     def face_data(self,image):
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         faces = face_detector.detectMultiScale(gray_image, 1.3, 5)
+        if faces:
+            self.hasFace.emit()
         for (x, y, h, w) in faces:
             cv2.rectangle(image, (x, y), (x + w, y + h), WHITE, 1)
+                        
 
     def run(self):
         self.ThreadActive = True

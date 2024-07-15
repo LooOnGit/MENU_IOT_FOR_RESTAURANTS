@@ -1,9 +1,16 @@
 import numpy as np
 import cv2
+import webbrowser
+import time
+import pyautogui
 
 target = 19 #cm
 khoangcachthuc = 45 #cm
 
+qr_image = cv2.imread("D:\Project_Micro\Python Source\MENU_IOT_FOR_RESTAURANTS\QR.png")
+detector = cv2.QRCodeDetector()
+# CONVERT QR CODE IMAGE TO TEXT
+data, bbox, _ = detector.detectAndDecode(qr_image)
 # variables
 # distance from camera to object(face) measured
 KNOWN_DISTANCE = 76.2  # centimeter
@@ -58,32 +65,51 @@ def face_data(image):
 
     return face_width
 
-
-
 cap = cv2.VideoCapture(0)
 
 # reading reference image from directory
-# ref_image = cv2.imread("Loo.jpg")
-# ref_image_face_width = face_data(ref_image)
-# focal_length_found = focal_length(KNOWN_DISTANCE, KNOWN_WIDTH, ref_image_face_width)
-# print(focal_length_found)
+ref_image = cv2.imread("Loo.jpg")
+ref_image_face_width = face_data(ref_image)
+focal_length_found = focal_length(KNOWN_DISTANCE, KNOWN_WIDTH, ref_image_face_width)
+print(focal_length_found)
 # cv2.imshow("ref_image", ref_image)
 
+start_time = 0
+OPEN_FORM_STATE = False
 
 while True:
     _, frame = cap.read()
-
     # calling face_data function
     face_width_in_frame = face_data(frame)
     # finding the distance by calling function Distance
-    if face_width_in_frame != 0:
-        # Distance = distance_finder(focal_length_found, KNOWN_WIDTH, face_width_in_frame)
+    if (face_width_in_frame != 0):
+        Distance = distance_finder(focal_length_found, KNOWN_WIDTH, face_width_in_frame)
         # Drwaing Text on the screen
-        Distance = 10
+        start_time = time.time_ns()
         cv2.putText(
             frame, f"Distance = {round(Distance,2)} CM", (50, 50), fonts, 1, (WHITE), 2
         )
-    cv2.imshow("frame", frame)
+        # SHOW WEBROWSER FORM
+        # if (OPEN_FORM_STATE == False):
+        #     print("mo tab")
+        #     # trực tiếp bằng url form cũng được không cần từ QR code
+        #     webbrowser.open(str(data))
+        #     OPEN_FORM_STATE = True
+        
+        # SHOW QR CODE
+        cv2.imshow("QR Code", qr_image)
+    else:
+        # CLOSE AFTRER 10S
+        if(time.time_ns() - start_time >= 10000000000 ):   
+            # CLOSE WEBROWSER FORM
+            # if (OPEN_FORM_STATE == True):
+            #     pyautogui.hotkey('ctrl', 'w')
+            #     print("tab closed")
+            #     OPEN_FORM_STATE = False
+            
+            # CLOSE QR CODE
+            cv2.destroyAllWindows()
+            
     if cv2.waitKey(1) == ord("q"):
         break
 cap.released()

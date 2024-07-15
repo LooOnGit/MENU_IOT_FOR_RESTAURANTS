@@ -63,10 +63,10 @@ def face_data(image):
 cap = cv2.VideoCapture(0)
 
 # reading reference image from directory
-ref_image = cv2.imread("Loo.jpg")
-ref_image_face_width = face_data(ref_image)
-focal_length_found = focal_length(KNOWN_DISTANCE, KNOWN_WIDTH, ref_image_face_width)
-print(focal_length_found)
+# ref_image = cv2.imread("Loo.jpg")
+# ref_image_face_width = face_data(ref_image)
+# focal_length_found = focal_length(KNOWN_DISTANCE, KNOWN_WIDTH, ref_image_face_width)
+# print(focal_length_found)
 # cv2.imshow("ref_image", ref_image)
 
 
@@ -77,8 +77,9 @@ while True:
     face_width_in_frame = face_data(frame)
     # finding the distance by calling function Distance
     if face_width_in_frame != 0:
-        Distance = distance_finder(focal_length_found, KNOWN_WIDTH, face_width_in_frame)
+        # Distance = distance_finder(focal_length_found, KNOWN_WIDTH, face_width_in_frame)
         # Drwaing Text on the screen
+        Distance = 10
         cv2.putText(
             frame, f"Distance = {round(Distance,2)} CM", (50, 50), fonts, 1, (WHITE), 2
         )
